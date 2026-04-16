@@ -16,6 +16,7 @@ include(${wxWidgets_USE_FILE})
 set(SOURCES
     src/MyApp.cpp
     src/MainFrame.cpp
+    src/LeftPanel.cpp
     wx.rc
 )
 
