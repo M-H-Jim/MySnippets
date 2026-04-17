@@ -14,7 +14,7 @@ class LeftPanel : public wxPanel {
         wxBitmapButton *addBtn;
     
     public:
-        LeftPanel(wxWindow *sw);
+        LeftPanel(wxWindow *w);
 };
 
 

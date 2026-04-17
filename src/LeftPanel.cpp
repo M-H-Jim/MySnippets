@@ -1,7 +1,7 @@
 #include "LeftPanel.h"
 
-LeftPanel::LeftPanel(wxWindow *sw)
-: wxPanel(sw, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
+LeftPanel::LeftPanel(wxWindow *w)
+: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
     
     folderText = new wxStaticText(this, wxID_ANY, "Folder");
     
