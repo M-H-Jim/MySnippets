@@ -61,8 +61,8 @@ RightPanel::RightPanel(wxWindow *w)
     
     
     topSizer = new wxBoxSizer(wxVERTICAL);
-    topSizer->Add(snippetName, 0, wxEXPAND | wxALL, 5);
-    topSizer->Add(editor, 1, wxEXPAND | wxALL, 5);
+    topSizer->Add(snippetName, 0, wxEXPAND | wxALL, 0);
+    topSizer->Add(editor, 1, wxEXPAND | wxALL, 0);
     this->SetSizer(topSizer);
     
 }
