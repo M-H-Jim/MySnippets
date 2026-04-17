@@ -17,6 +17,7 @@ set(SOURCES
     src/MyApp.cpp
     src/MainFrame.cpp
     src/LeftPanel.cpp
+    src/MiddlePanel.cpp
     wx.rc
 )
 
