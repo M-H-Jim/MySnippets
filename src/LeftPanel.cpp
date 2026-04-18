@@ -74,9 +74,6 @@ void LeftPanel::OnFolderSelection(wxCommandEvent& event) {
     
     wxPostEvent(this, evt);
     
-    
-    wxString name = folderList->GetString(selectedFolderIndex);
-    wxLogMessage("Selected folder: %s", name);
 }
 
 

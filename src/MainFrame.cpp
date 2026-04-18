@@ -1,5 +1,5 @@
 #include "MainFrame.h"
-#include "LeftPanel.h"
+
 
 
 MainFrame::MainFrame(const wxString& title)
@@ -7,16 +7,17 @@ MainFrame::MainFrame(const wxString& title)
     
     panel = new wxPanel(this);
     
-    LeftPanel *p = new LeftPanel(panel);
+    leftPanel = new LeftPanel(panel);
     
     // binding
     this->Bind(EVT_FOLDER_SELECTED, &MainFrame::OnFolderSelected, this);
     
-    MiddlePanel *p = new MiddlePanel(panel);
+    middlePanel = new MiddlePanel(panel);
 
     
-    wxBoxSizer *s = new wxBoxSizer(wxVERTICAL);
-    s->Add(p, 1, wxEXPAND, 0);
+    wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL);
+    s->Add(leftPanel, 1, wxEXPAND, 0);
+    s->Add(middlePanel, 1, wxEXPAND, 0);
     panel->SetSizer(s);
     
     
@@ -25,7 +26,6 @@ MainFrame::MainFrame(const wxString& title)
 
 void MainFrame::OnFolderSelected(wxCommandEvent& event) {
     int index = event.GetInt();
-    
-    wxLogMessage("MainFrame got folder index: %d", index);
+    middlePanel->LoadSnippetsForFolder(index);
 }
 
