@@ -14,8 +14,12 @@ class MiddlePanel : public wxPanel {
         wxSearchCtrl *searchCtrl;
         wxBitmapButton *addBtn;
         
+        wxListBox *snippetList;
+        int selectedSnippetIndex = -1;
+        
     public:
         MiddlePanel(wxWindow *w);
+        void LoadSnippetsForFolder(int folderIndex);
 };
 
 #endif // MIDDLEPANEL_H
