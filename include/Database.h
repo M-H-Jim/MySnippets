@@ -2,6 +2,7 @@
 #define DATABASE_H
 
 #include <iostream>
+#include <vector>
 #include <sqlite3.h>
 
 class Database {
@@ -13,6 +14,7 @@ class Database {
         ~Database();
         
         sqlite3* Get();
+        void PrintFolders();
 };
 
 
