@@ -19,6 +19,7 @@ class MainFrame : public wxFrame {
         MainFrame (const wxString& title);
     private:
         void OnFolderSelected(wxCommandEvent& event);
+        void OnSnippetSelected(wxCommandEvent& event);
 };
 
 

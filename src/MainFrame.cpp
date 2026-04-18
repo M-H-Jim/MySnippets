@@ -8,11 +8,10 @@ MainFrame::MainFrame(const wxString& title)
     panel = new wxPanel(this);
     
     leftPanel = new LeftPanel(panel);
-    
-    // binding
     this->Bind(EVT_FOLDER_SELECTED, &MainFrame::OnFolderSelected, this);
     
     middlePanel = new MiddlePanel(panel);
+    this->Bind(EVT_SNIPPET_SELECTED, &MainFrame::OnSnippetSelected, this);
 
     
     wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL);
@@ -24,8 +23,16 @@ MainFrame::MainFrame(const wxString& title)
     
 }
 
+
+void MainFrame::OnSnippetSelected(wxCommandEvent& event) {
+    int index = event.GetInt();
+    
+    
+}
+
 void MainFrame::OnFolderSelected(wxCommandEvent& event) {
     int index = event.GetInt();
     middlePanel->LoadSnippetsForFolder(index);
 }
+
 
