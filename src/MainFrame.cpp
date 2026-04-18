@@ -1,6 +1,7 @@
 #include "MainFrame.h"
 #include "LeftPanel.h"
 
+
 MainFrame::MainFrame(const wxString& title)
 : wxFrame(NULL, wxID_ANY, title) {
     
@@ -11,12 +12,8 @@ MainFrame::MainFrame(const wxString& title)
     // binding
     this->Bind(EVT_FOLDER_SELECTED, &MainFrame::OnFolderSelected, this);
     
-    
-    
-    
-    
-    
-    
+    MiddlePanel *p = new MiddlePanel(panel);
+
     
     wxBoxSizer *s = new wxBoxSizer(wxVERTICAL);
     s->Add(p, 1, wxEXPAND, 0);
