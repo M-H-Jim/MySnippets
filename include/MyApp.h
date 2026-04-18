@@ -3,7 +3,6 @@
 
 #include <wx/wx.h>
 #include "MainFrame.h"
-#include "Database.h"
 
 class MyApp : public wxApp {
     public:

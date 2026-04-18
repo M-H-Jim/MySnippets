@@ -8,7 +8,10 @@ MainFrame::MainFrame(const wxString& title)
     
     panel = new wxPanel(this);
     
-    leftPanel = new LeftPanel(panel);
+    Database *db = new Database("snippets.db");
+    
+    
+    leftPanel = new LeftPanel(panel, db);
     this->Bind(EVT_FOLDER_SELECTED, &MainFrame::OnFolderSelected, this);
     
     middlePanel = new MiddlePanel(panel);

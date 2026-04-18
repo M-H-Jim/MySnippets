@@ -7,6 +7,7 @@
 #include "LeftPanel.h"
 #include "MiddlePanel.h"
 #include "RightPanel.h"
+#include "Database.h"
 
 class MainFrame : public wxFrame {
     private:

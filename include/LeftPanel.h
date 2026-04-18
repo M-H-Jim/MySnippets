@@ -5,11 +5,17 @@
 #include <wx/wx.h>
 #include <wx/splitter.h>
 
+#include "Database.h"
+
+
 wxDECLARE_EVENT(EVT_FOLDER_SELECTED, wxCommandEvent);
 
 
 class LeftPanel : public wxPanel {
     private:
+        
+        Database *database;
+        
         wxBoxSizer *topSizer;
         wxBoxSizer *folderHeaderSizer;
         
@@ -19,9 +25,11 @@ class LeftPanel : public wxPanel {
         wxListBox *folderList;
         int selectedFolderIndex = -1;
         
-    
+        
+        
+        
     public:
-        LeftPanel(wxWindow *sw);
+        LeftPanel(wxWindow *w, Database *db);
         int GetSelectedFolderIndex() const;
     private:
         void OnFolderSelection(wxCommandEvent& event);

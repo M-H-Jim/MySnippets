@@ -5,8 +5,11 @@ wxDEFINE_EVENT(EVT_FOLDER_SELECTED, wxCommandEvent);
 
 
 
-LeftPanel::LeftPanel(wxWindow *sw)
-: wxPanel(sw, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
+LeftPanel::LeftPanel(wxWindow *w, Database *db)
+: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
+    
+    database = db;
+    
     
     
     wxFont font(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
@@ -34,10 +37,35 @@ LeftPanel::LeftPanel(wxWindow *sw)
     folderList->SetForegroundColour(wxColour(220, 220, 220));
     
     
-    folderList->Append("Personal");
-    folderList->Append("Work");
-    folderList->Append("Ideas");
-    folderList->Append("Archive");
+    //sql enters
+    
+    const char *sql = "SELECT id, name FROM folders;";
+    sqlite3_stmt *stmt;
+    
+    if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            const char *name = (const char *)sqlite3_column_text(stmt, 1);
+            folderList->Append(name);
+        }
+    }
+    
+    sqlite3_finalize(stmt);
+    
+    
+    
+    
+    
+    
+    
+    
+    // sql ends
+    
+    
+    
+    
+    
+    
+    
     // ------------------------------
     
     
