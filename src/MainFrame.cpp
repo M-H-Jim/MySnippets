@@ -2,6 +2,7 @@
 
 
 
+
 MainFrame::MainFrame(const wxString& title)
 : wxFrame(NULL, wxID_ANY, title) {
     
@@ -12,11 +13,14 @@ MainFrame::MainFrame(const wxString& title)
     
     middlePanel = new MiddlePanel(panel);
     this->Bind(EVT_SNIPPET_SELECTED, &MainFrame::OnSnippetSelected, this);
-
+    
+    rightPanel = new RightPanel(panel);
+    
     
     wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL);
     s->Add(leftPanel, 1, wxEXPAND, 0);
     s->Add(middlePanel, 1, wxEXPAND, 0);
+    s->Add(rightPanel, 1, wxEXPAND, 0);
     panel->SetSizer(s);
     
     

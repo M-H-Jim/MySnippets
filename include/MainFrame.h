@@ -6,7 +6,7 @@
 
 #include "LeftPanel.h"
 #include "MiddlePanel.h"
-
+#include "RightPanel.h"
 
 class MainFrame : public wxFrame {
     private:
@@ -14,6 +14,7 @@ class MainFrame : public wxFrame {
         
         LeftPanel *leftPanel;
         MiddlePanel *middlePanel;
+        RightPanel *rightPanel;
         
     public:
         MainFrame (const wxString& title);
