@@ -9,6 +9,8 @@ class MainFrame : public wxFrame {
         wxPanel *panel;
     public:
         MainFrame (const wxString& title);
+    private:
+        void OnFolderSelected(wxCommandEvent& event);
 };
 
 

@@ -1,5 +1,10 @@
 #include "LeftPanel.h"
 
+wxDEFINE_EVENT(EVT_FOLDER_SELECTED, wxCommandEvent);
+
+
+
+
 LeftPanel::LeftPanel(wxWindow *sw)
 : wxPanel(sw, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
     
@@ -63,8 +68,14 @@ int LeftPanel::GetSelectedFolderIndex() const {
 
 void LeftPanel::OnFolderSelection(wxCommandEvent& event) {
     selectedFolderIndex = event.GetSelection();
-    wxString name = folderList->GetString(selectedFolderIndex);
     
+    wxCommandEvent evt(EVT_FOLDER_SELECTED);
+    evt.SetInt(selectedFolderIndex);
+    
+    wxPostEvent(this, evt);
+    
+    
+    wxString name = folderList->GetString(selectedFolderIndex);
     wxLogMessage("Selected folder: %s", name);
 }
 

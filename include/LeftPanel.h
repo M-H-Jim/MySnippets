@@ -5,6 +5,9 @@
 #include <wx/wx.h>
 #include <wx/splitter.h>
 
+wxDECLARE_EVENT(EVT_FOLDER_SELECTED, wxCommandEvent);
+
+
 class LeftPanel : public wxPanel {
     private:
         wxBoxSizer *topSizer;
