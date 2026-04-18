@@ -1,10 +1,12 @@
 #include "MyApp.h"
-#include "MainFrame.h"
+
 
 wxIMPLEMENT_APP(MyApp);
 
 bool MyApp::OnInit() {
     SetAppearance(Appearance::System);
+    
+    Database db("snippits.db");
     
     MainFrame *frame = new MainFrame("MySnippets");
     frame->SetClientSize(1200, 600);
