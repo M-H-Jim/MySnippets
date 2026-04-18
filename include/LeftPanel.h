@@ -12,9 +12,17 @@ class LeftPanel : public wxPanel {
         
         wxStaticText *folderText;
         wxBitmapButton *addBtn;
+        
+        wxListBox *folderList;
+        int selectedFolderIndex = -1;
+        
     
     public:
         LeftPanel(wxWindow *sw);
+        int GetSelectedFolderIndex() const;
+    private:
+        void OnFolderSelection(wxCommandEvent& event);
+        
 };
 
 
