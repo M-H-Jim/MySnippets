@@ -30,8 +30,15 @@ MainFrame::MainFrame(const wxString& title)
 
 void MainFrame::OnSnippetSelected(wxCommandEvent& event) {
     int index = event.GetInt();
-    
-    
+    if (index == 0) {
+        rightPanel->GetEditor()->SetText("int main() {\n return 0\n}");
+    }
+    else if (index == 1) {
+        rightPanel->GetEditor()->SetText("SELECT * FROM users;");
+    }
+    else {
+        rightPanel->GetEditor()->SetText("It works!!!!!!!");
+    }
 }
 
 void MainFrame::OnFolderSelected(wxCommandEvent& event) {

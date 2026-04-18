@@ -82,7 +82,6 @@ void MiddlePanel::OnSnippetSelection(wxCommandEvent& event) {
     evt.SetInt(selectedSnippetIndex);
     
     wxPostEvent(this, evt);
-    wxLogMessage("%d", selectedSnippetIndex);
     
 }
 
