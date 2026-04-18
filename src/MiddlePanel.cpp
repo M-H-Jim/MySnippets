@@ -1,5 +1,7 @@
 #include "MiddlePanel.h"
 
+wxDEFINE_EVENT(EVT_SNIPPET_SELECTED, wxCommandEvent);
+
 MiddlePanel::MiddlePanel(wxWindow *w)
 : wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
     
@@ -27,6 +29,8 @@ MiddlePanel::MiddlePanel(wxWindow *w)
     // experimental------------
     snippetList = new wxListBox(this, wxID_ANY);
     snippetList->SetFont(font);
+    
+    snippetList->Bind(wxEVT_LISTBOX, &MiddlePanel::OnSnippetSelection, this);
     
     snippetList->SetBackgroundColour(wxColour(35, 35, 35));
     snippetList->SetForegroundColour(wxColour(220, 220, 220));
@@ -71,7 +75,16 @@ void MiddlePanel::LoadSnippetsForFolder(int folderIndex) {
     
 }
 
-
+void MiddlePanel::OnSnippetSelection(wxCommandEvent& event) {
+    selectedSnippetIndex = event.GetSelection();
+    
+    wxCommandEvent evt(EVT_SNIPPET_SELECTED);
+    evt.SetInt(selectedSnippetIndex);
+    
+    wxPostEvent(this, evt);
+    wxLogMessage("%d", selectedSnippetIndex);
+    
+}
 
 
 

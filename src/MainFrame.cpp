@@ -6,13 +6,23 @@ MainFrame::MainFrame(const wxString& title)
     
     panel = new wxPanel(this);
     
-    MiddlePanel *p = new MiddlePanel(panel);
+    middlePanel = new MiddlePanel(panel);
     
     wxBoxSizer *s = new wxBoxSizer(wxVERTICAL);
-    s->Add(p, 1, wxEXPAND, 0);
+    s->Add(middlePanel, 1, wxEXPAND, 0);
     panel->SetSizer(s);
     
+    middlePanel->Bind(EVT_SNIPPET_SELECTED, &MainFrame::OnSnippetSelected, this);
+    
+    
+}
+
+
+void MainFrame::OnSnippetSelected(wxCommandEvent& event) {
+    int index = event.GetInt();
     
     
     
 }
+
+

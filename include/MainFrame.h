@@ -10,8 +10,10 @@
 class MainFrame : public wxFrame {
     private:
         wxPanel *panel;
+        MiddlePanel *middlePanel;
     public:
         MainFrame (const wxString& title);
+        void OnSnippetSelected(wxCommandEvent& event);
 };
 
 

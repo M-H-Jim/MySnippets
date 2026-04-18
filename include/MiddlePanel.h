@@ -6,6 +6,11 @@
 #include <wx/splitter.h>
 #include <wx/srchctrl.h>
 
+
+wxDECLARE_EVENT(EVT_SNIPPET_SELECTED, wxCommandEvent);
+
+
+
 class MiddlePanel : public wxPanel {
     private:
         wxBoxSizer *topSizer;
@@ -20,6 +25,8 @@ class MiddlePanel : public wxPanel {
     public:
         MiddlePanel(wxWindow *w);
         void LoadSnippetsForFolder(int folderIndex);
+    private:
+        void OnSnippetSelection(wxCommandEvent& event);
 };
 
 #endif // MIDDLEPANEL_H
