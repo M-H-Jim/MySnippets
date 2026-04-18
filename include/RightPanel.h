@@ -16,6 +16,7 @@ class RightPanel : public wxPanel {
         
     public:
         RightPanel(wxWindow *w);
+        wxStyledTextCtrl* GetEditor();
 };
 
 
