@@ -2,8 +2,9 @@
 
 wxDEFINE_EVENT(EVT_SNIPPET_SELECTED, wxCommandEvent);
 
-MiddlePanel::MiddlePanel(wxWindow *w)
-: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
+MiddlePanel::MiddlePanel(wxWindow *w, Database *db)
+: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER), 
+  database(db) {
     
     wxFont font(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
         wxFONTWEIGHT_NORMAL, false, "Cascadia Code");
@@ -54,25 +55,20 @@ MiddlePanel::MiddlePanel(wxWindow *w)
 }
 
 
-void MiddlePanel::LoadSnippetsForFolder(int folderIndex) {
+void MiddlePanel::LoadSnippetsForFolder(int folderId) {
     snippetList->Clear();
     
-    if (folderIndex == 0) {
-        snippetList->Append("Personal Snippet 1");
-        snippetList->Append("Personal Snippet 2");
-    }
-    else if (folderIndex == 1) {
-        snippetList->Append("Work API Code");
-        snippetList->Append("Database Query");
-    }
-    else if (folderIndex == 2) {
-        snippetList->Append("Cool Idea 1");
-        snippetList->Append("Startup Concept");
-    }
-    else {
-        snippetList->Append("Old Stuff");
-    }
+    const char *sql = "SELECT id, title FROM snippets WHERE folder_id = ?";
+    sqlite3_stmt *stmt;
     
+    if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, folderId);
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            const char *title = (const char *)sqlite3_column_text(stmt, 1);
+            snippetList->Append(title);
+        }
+    }
+    sqlite3_finalize(stmt);
 }
 
 void MiddlePanel::OnSnippetSelection(wxCommandEvent& event) {

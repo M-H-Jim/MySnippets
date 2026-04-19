@@ -14,7 +14,7 @@ MainFrame::MainFrame(const wxString& title)
     leftPanel = new LeftPanel(panel, db);
     this->Bind(EVT_FOLDER_SELECTED, &MainFrame::OnFolderSelected, this);
     
-    middlePanel = new MiddlePanel(panel);
+    middlePanel = new MiddlePanel(panel, db);
     this->Bind(EVT_SNIPPET_SELECTED, &MainFrame::OnSnippetSelected, this);
     
     rightPanel = new RightPanel(panel);
@@ -45,8 +45,8 @@ void MainFrame::OnSnippetSelected(wxCommandEvent& event) {
 }
 
 void MainFrame::OnFolderSelected(wxCommandEvent& event) {
-    int index = event.GetInt();
-    middlePanel->LoadSnippetsForFolder(index);
+    int folderId = event.GetInt();
+    middlePanel->LoadSnippetsForFolder(folderId);
 }
 
 

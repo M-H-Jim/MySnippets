@@ -6,11 +6,8 @@ wxDEFINE_EVENT(EVT_FOLDER_SELECTED, wxCommandEvent);
 
 
 LeftPanel::LeftPanel(wxWindow *w, Database *db)
-: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
-    
-    database = db;
-    
-    
+: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER), 
+  database(db) {
     
     wxFont font(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
         wxFONTWEIGHT_NORMAL, false, "Cascadia Code");
