@@ -1,6 +1,8 @@
 #ifndef LEFTPANEL_H
 #define LEFTPANEL_H
 
+#include <vector>
+
 #include <wx/artprov.h>
 #include <wx/wx.h>
 #include <wx/splitter.h>
@@ -9,6 +11,12 @@
 
 
 wxDECLARE_EVENT(EVT_FOLDER_SELECTED, wxCommandEvent);
+
+
+struct Folder {
+    int id;
+    std::string name;
+};
 
 
 class LeftPanel : public wxPanel {
@@ -22,10 +30,10 @@ class LeftPanel : public wxPanel {
         wxStaticText *folderText;
         wxBitmapButton *addBtn;
         
+        std::vector<Folder> folders;
+        
         wxListBox *folderList;
         int selectedFolderIndex = -1;
-        
-        
         
         
     public:

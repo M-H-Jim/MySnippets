@@ -44,8 +44,10 @@ LeftPanel::LeftPanel(wxWindow *w, Database *db)
     
     if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
         while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int id = sqlite3_column_int(stmt, 0);
             const char *name = (const char *)sqlite3_column_text(stmt, 1);
             folderList->Append(name);
+            folders.push_back({id, name});
         }
     }
     
@@ -98,7 +100,7 @@ void LeftPanel::OnFolderSelection(wxCommandEvent& event) {
     selectedFolderIndex = event.GetSelection();
     
     wxCommandEvent evt(EVT_FOLDER_SELECTED);
-    evt.SetInt(selectedFolderIndex);
+    evt.SetInt(folders[selectedFolderIndex].id);
     
     wxPostEvent(this, evt);
     
