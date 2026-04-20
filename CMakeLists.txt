@@ -20,7 +20,7 @@ set(SOURCES
     src/MiddlePanel.cpp
     src/RightPanel.cpp
     src/Database.cpp
-    src/sqlite3.c
+    third_party/sqlite3.c
     wx.rc
 )
 
@@ -28,4 +28,4 @@ add_executable(MySnippets ${SOURCES})
 
 target_link_libraries(MySnippets ${wxWidgets_LIBRARIES})
 
-target_include_directories(MySnippets PRIVATE include)
+target_include_directories(MySnippets PRIVATE include third_party)
