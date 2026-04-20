@@ -55,8 +55,9 @@ MiddlePanel::MiddlePanel(wxWindow *w, Database *db)
 }
 
 
-void MiddlePanel::LoadSnippetsForFolder(int folderId) {
+void MiddlePanel::LoadSnippetsTitleForFolder(int folderId) {
     snippetList->Clear();
+    snippets.clear();
     
     const char *sql = "SELECT id, title FROM snippets WHERE folder_id = ?";
     sqlite3_stmt *stmt;
@@ -64,8 +65,10 @@ void MiddlePanel::LoadSnippetsForFolder(int folderId) {
     if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
         sqlite3_bind_int(stmt, 1, folderId);
         while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int id = sqlite3_column_int(stmt, 0);
             const char *title = (const char *)sqlite3_column_text(stmt, 1);
             snippetList->Append(title);
+            snippets.push_back({id, title});
         }
     }
     sqlite3_finalize(stmt);
@@ -75,7 +78,7 @@ void MiddlePanel::OnSnippetSelection(wxCommandEvent& event) {
     selectedSnippetIndex = event.GetSelection();
     
     wxCommandEvent evt(EVT_SNIPPET_SELECTED);
-    evt.SetInt(selectedSnippetIndex);
+    evt.SetInt(snippets[selectedSnippetIndex].id);
     
     wxPostEvent(this, evt);
     

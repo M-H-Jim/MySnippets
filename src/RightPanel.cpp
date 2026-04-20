@@ -1,7 +1,8 @@
 #include "RightPanel.h"
 
-RightPanel::RightPanel(wxWindow *w)
-: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
+RightPanel::RightPanel(wxWindow *w, Database *db)
+: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER), 
+  database(db) {
     
     wxFont font(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
     false, "Cascadia Code");
@@ -112,7 +113,20 @@ wxStyledTextCtrl* RightPanel::GetEditor() {
     return editor;
 }
 
-
+void RightPanel::LoadSnippetForTitle(int snippetId) {
+    const char *sql = "SELECT content FROM snippets WHERE id = ?";
+    sqlite3_stmt *stmt;
+    
+    if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, snippetId);
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            const char *content = (const char *)sqlite3_column_text(stmt, 0);
+            editor->SetText(content);
+        }
+    }
+    
+    sqlite3_finalize(stmt);
+}
 
 
 

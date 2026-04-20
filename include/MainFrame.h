@@ -13,6 +13,8 @@ class MainFrame : public wxFrame {
     private:
         wxPanel *panel;
         
+        Database *db;
+        
         LeftPanel *leftPanel;
         MiddlePanel *middlePanel;
         RightPanel *rightPanel;

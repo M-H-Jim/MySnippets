@@ -8,7 +8,7 @@ MainFrame::MainFrame(const wxString& title)
     
     panel = new wxPanel(this);
     
-    Database *db = new Database("snippets.db");
+    db = new Database("snippets.db");
     
     
     leftPanel = new LeftPanel(panel, db);
@@ -17,7 +17,7 @@ MainFrame::MainFrame(const wxString& title)
     middlePanel = new MiddlePanel(panel, db);
     this->Bind(EVT_SNIPPET_SELECTED, &MainFrame::OnSnippetSelected, this);
     
-    rightPanel = new RightPanel(panel);
+    rightPanel = new RightPanel(panel, db);
     
     
     wxBoxSizer *s = new wxBoxSizer(wxHORIZONTAL);
@@ -32,21 +32,13 @@ MainFrame::MainFrame(const wxString& title)
 
 
 void MainFrame::OnSnippetSelected(wxCommandEvent& event) {
-    int index = event.GetInt();
-    if (index == 0) {
-        rightPanel->GetEditor()->SetText("int main() {\n return 0\n}");
-    }
-    else if (index == 1) {
-        rightPanel->GetEditor()->SetText("SELECT * FROM users;");
-    }
-    else {
-        rightPanel->GetEditor()->SetText("It works!!!!!!!");
-    }
+    int snippetId = event.GetInt();
+    rightPanel->LoadSnippetForTitle(snippetId);
 }
 
 void MainFrame::OnFolderSelected(wxCommandEvent& event) {
     int folderId = event.GetInt();
-    middlePanel->LoadSnippetsForFolder(folderId);
+    middlePanel->LoadSnippetsTitleForFolder(folderId);
 }
 
 
