@@ -1,7 +1,8 @@
 #include "RightPanel.h"
 
-RightPanel::RightPanel(wxWindow *w)
-: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER) {
+RightPanel::RightPanel(wxWindow *w, Database *db)
+: wxPanel(w, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER), 
+  database(db) {
     
     wxFont font(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
     false, "Cascadia Code");
@@ -15,11 +16,54 @@ RightPanel::RightPanel(wxWindow *w)
     editor->SetText("using namespace std");
     
     // set different colour styles
+    editor->StyleClearAll();
+    
+    
+    // temp lexer
+    editor->SetLexer(wxSTC_LEX_CPP);
+    
+    
+    
+    
+    
     editor->StyleSetBackground(wxSTC_STYLE_DEFAULT, wxColour(30, 30, 30));
     editor->StyleSetForeground(wxSTC_STYLE_DEFAULT, wxColour(220, 220, 220));
-    editor->StyleClearAll();
     editor->SetSelBackground(true, wxColour(60, 60, 60));
     editor->SetSelForeground(true, wxColour(255, 255, 255));
+    
+    
+    
+    //-----------------------------------------------
+    
+    // Keywords
+    editor->StyleSetForeground(wxSTC_C_WORD, wxColour(80, 160, 255));
+    editor->StyleSetBold(wxSTC_C_WORD, true);
+
+    // Strings
+    editor->StyleSetForeground(wxSTC_C_STRING, wxColour(220, 120, 120));
+    editor->StyleSetForeground(wxSTC_C_CHARACTER, wxColour(220, 120, 120));
+
+    // Comments
+    editor->StyleSetForeground(wxSTC_C_COMMENT, wxColour(0, 180, 0));
+    editor->StyleSetForeground(wxSTC_C_COMMENTLINE, wxColour(0, 180, 0));
+    editor->StyleSetForeground(wxSTC_C_COMMENTDOC, wxColour(0, 140, 0));
+
+    // Numbers
+    editor->StyleSetForeground(wxSTC_C_NUMBER, wxColour(255, 200, 0));
+
+    // Preprocessor
+    editor->StyleSetForeground(wxSTC_C_PREPROCESSOR, wxColour(200, 200, 0));
+
+    // Operators
+    editor->StyleSetForeground(wxSTC_C_OPERATOR, wxColour(180, 180, 180));
+
+    // Default text
+    editor->StyleSetForeground(wxSTC_STYLE_DEFAULT, wxColour(220, 220, 220));
+    
+    //-----------------------------------------------
+
+    
+    
     
     // caret stuff
     editor->SetCaretForeground(wxColour(255, 255, 255));
@@ -42,16 +86,13 @@ RightPanel::RightPanel(wxWindow *w)
     
     
     
-    
-    
-    
     editor->SetScrollWidthTracking(true);
     editor->SetEndAtLastLine(false);
     
     
     
     
-    
+    // indent stuff
     editor->SetUseTabs(false);
     editor->SetTabWidth(4);
     editor->SetIndent(4);
@@ -66,3 +107,35 @@ RightPanel::RightPanel(wxWindow *w)
     this->SetSizer(topSizer);
     
 }
+
+
+wxStyledTextCtrl* RightPanel::GetEditor() {
+    return editor;
+}
+
+void RightPanel::LoadSnippetForTitle(int snippetId) {
+    const char *sql = "SELECT content FROM snippets WHERE id = ?";
+    sqlite3_stmt *stmt;
+    
+    if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, snippetId);
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            const char *content = (const char *)sqlite3_column_text(stmt, 0);
+            editor->SetText(content);
+        }
+    }
+    
+    sqlite3_finalize(stmt);
+}
+
+
+
+
+
+
+
+
+
+
+
+

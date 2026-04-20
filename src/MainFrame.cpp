@@ -12,9 +12,16 @@ MainFrame::MainFrame(const wxString& title)
         wxDefaultPosition, wxDefaultSize, wxSP_THIN_SASH | wxSP_LIVE_UPDATE | 
         wxSP_NOBORDER);
     
-    leftPanel = new LeftPanel(mainSplitter);
-    middlePanel = new MiddlePanel(listEditorSplitter);
-    rightPanel = new RightPanel(listEditorSplitter);
+    db = new Database("snippets.db");
+    
+    
+    leftPanel = new LeftPanel(mainSplitter, db);
+    this->Bind(EVT_FOLDER_SELECTED, &MainFrame::OnFolderSelected, this);
+    
+    middlePanel = new MiddlePanel(listEditorSplitter, db);
+    this->Bind(EVT_SNIPPET_SELECTED, &MainFrame::OnSnippetSelected, this);
+    
+    rightPanel = new RightPanel(listEditorSplitter, db);
     
     
     int width = 800;
@@ -44,5 +51,17 @@ MainFrame::MainFrame(const wxString& title)
     
     
     
-    
 }
+
+
+void MainFrame::OnSnippetSelected(wxCommandEvent& event) {
+    int snippetId = event.GetInt();
+    rightPanel->LoadSnippetForTitle(snippetId);
+}
+
+void MainFrame::OnFolderSelected(wxCommandEvent& event) {
+    int folderId = event.GetInt();
+    middlePanel->LoadSnippetsTitleForFolder(folderId);
+}
+
+

@@ -8,13 +8,18 @@
 #include "MiddlePanel.h"
 #include "RightPanel.h"
 
+#include "Database.h"
+
 
 class MainFrame : public wxFrame {
     private:
         wxPanel *panel;
         
+        
         wxSplitterWindow *mainSplitter;
         wxSplitterWindow *listEditorSplitter;
+        
+        Database *db;
         
         LeftPanel *leftPanel;
         MiddlePanel *middlePanel;
@@ -25,6 +30,9 @@ class MainFrame : public wxFrame {
         
     public:
         MainFrame (const wxString& title);
+    private:
+        void OnFolderSelected(wxCommandEvent& event);
+        void OnSnippetSelected(wxCommandEvent& event);
 };
 
 
