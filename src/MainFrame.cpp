@@ -17,7 +17,6 @@ MainFrame::MainFrame(const wxString& title)
     
     db = new Database("snippets.db");
     
-    
     leftPanel = new LeftPanel(mainSplitter, db);
     this->Bind(EVT_FOLDER_SELECTED, &MainFrame::OnFolderSelected, this);
     

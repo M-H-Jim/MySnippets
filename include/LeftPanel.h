@@ -12,6 +12,13 @@
 
 wxDECLARE_EVENT(EVT_FOLDER_SELECTED, wxCommandEvent);
 
+enum {
+    ID_ADD_FOLDER = wxID_HIGHEST + 1,
+    ID_RENAME_FOLDER,
+    ID_DELETE_FOLDER
+};
+
+
 
 struct Folder {
     int id;
@@ -41,6 +48,11 @@ class LeftPanel : public wxPanel {
         int GetSelectedFolderIndex() const;
     private:
         void OnFolderSelection(wxCommandEvent& event);
+        void OnFolderDClick(wxCommandEvent& event);
+        void OnAddBtnClicked(wxCommandEvent& event);
+        void OnDeleteFolder(wxCommandEvent& event);
+        
+        void OnFolderRightClick(wxContextMenuEvent& event);
 };
 
 

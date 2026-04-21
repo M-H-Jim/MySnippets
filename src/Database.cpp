@@ -5,6 +5,7 @@ Database::Database(const char *path) {
         std::cout << "Failed to open database\n" << std::endl;
     }
     else {
+        sqlite3_exec(db, "PRAGMA foreign_keys = ON;", nullptr, nullptr, nullptr);
         std::cout << "Database opened successfully\n" << std::endl;
     }
 }

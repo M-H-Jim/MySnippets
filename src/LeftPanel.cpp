@@ -81,6 +81,11 @@ LeftPanel::LeftPanel(wxWindow *w, Database *db)
     // Bindings ~~~~~~~~~~~~~~~~~~~~~~~~
     
     folderList->Bind(wxEVT_LISTBOX, &LeftPanel::OnFolderSelection, this);
+    folderList->Bind(wxEVT_LISTBOX_DCLICK, &LeftPanel::OnFolderDClick, this);
+    
+    folderList->Bind(wxEVT_CONTEXT_MENU, &LeftPanel::OnFolderRightClick, this);
+    
+    addBtn->Bind(wxEVT_BUTTON, &LeftPanel::OnAddBtnClicked, this);
     
     
     // Bindings ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,6 +104,116 @@ void LeftPanel::OnFolderSelection(wxCommandEvent& event) {
     
     wxPostEvent(this, evt);
     
+}
+
+void LeftPanel::OnFolderDClick(wxCommandEvent& event) {
+    int index = folderList->GetSelection();
+    if (index == wxNOT_FOUND) {
+        return;
+    }
+    wxString currentName = folderList->GetString(index);
+    
+    wxTextEntryDialog dialog(this, "Rename folder:", "Rename", currentName);
+    
+    if (dialog.ShowModal() == wxID_OK) {
+        wxString newName = dialog.GetValue();
+        if (newName.IsEmpty()) {
+            return;
+        }
+        
+        folderList->SetString(index, newName);
+        
+        int id = folders[index].id;
+        
+        sqlite3_stmt *stmt;
+        const char *sql = "UPDATE folders SET name = ? WHERE id = ?;";
+        
+        if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
+            sqlite3_bind_text(stmt, 1, newName.mb_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int(stmt, 2, id);
+            if(sqlite3_step(stmt) == SQLITE_DONE) {
+                sqlite3_finalize(stmt);
+                folders[index].name = newName.ToStdString();
+            }
+            else {
+                sqlite3_finalize(stmt);
+                wxMessageBox("Failed to update database!");
+            }
+        }
+        
+    }
+}
+
+
+
+void LeftPanel::OnAddBtnClicked(wxCommandEvent& event) {
+    wxTextEntryDialog dialog(this, "Enter new folder name:", "New Folder");
+    if (dialog.ShowModal() == wxID_OK) {
+        wxString folderName = dialog.GetValue();
+        if (!folderName.IsEmpty()) {
+            folderList->Append(folderName);
+            
+            sqlite3_stmt *stmt;
+            const char *sql = "INSERT INTO folders (name) VALUES (?);";
+            sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL);
+            sqlite3_bind_text(stmt, 1, folderName.mb_str(), -1, SQLITE_TRANSIENT);
+            if(sqlite3_step(stmt) == SQLITE_DONE) {
+                sqlite3_finalize(stmt);
+            }
+            else {
+                sqlite3_finalize(stmt);
+                wxMessageBox("Failed to add new folder");
+            }
+        }
+    }
+}
+
+void LeftPanel::OnDeleteFolder(wxCommandEvent& event) {
+    int index = folderList->GetSelection();
+    if (index == wxNOT_FOUND) {
+        return;
+    }
+    
+    
+    int res = wxMessageBox(
+        "Are you sure you want to delete this folder?\nAll it's snippets will also be deleted FOREVER.",
+        "confirm Delete",
+        wxYES_NO | wxICON_WARNING
+    );
+    
+    if (res != wxYES) {
+        return;
+    }
+    
+    int id = folders[index].id;
+    sqlite3_stmt *stmt;
+    const char *sql = "DELETE FROM folders WHERE id = ?;";
+    
+    if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, id);
+        if(sqlite3_step(stmt) == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            folderList->Delete(index);
+            folders.erase(folders.begin() + index);
+        }
+        else {
+            sqlite3_finalize(stmt);
+            wxMessageBox("Failed to delete folder");
+        }
+    }
+}
+
+void LeftPanel::OnFolderRightClick(wxContextMenuEvent& event) {
+    wxMenu menu;
+    menu.Append(ID_ADD_FOLDER, "New Folder");
+    menu.Append(ID_RENAME_FOLDER, "Rename");
+    menu.Append(ID_DELETE_FOLDER, "Delete");
+    
+    Bind(wxEVT_MENU, &LeftPanel::OnAddBtnClicked, this, ID_ADD_FOLDER);
+    Bind(wxEVT_MENU, &LeftPanel::OnFolderDClick, this, ID_RENAME_FOLDER);
+    Bind(wxEVT_MENU, &LeftPanel::OnDeleteFolder, this, ID_DELETE_FOLDER);
+    
+    PopupMenu(&menu);
 }
 
 
