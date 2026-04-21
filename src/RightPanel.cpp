@@ -7,9 +7,9 @@ RightPanel::RightPanel(wxWindow *w, Database *db)
     wxFont font(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
     false, "Cascadia Code");
     
-    snippetName = new wxTextCtrl(this, wxID_ANY, "this is a text",
-    wxDefaultPosition, wxSize(-1, 35));
-    snippetName->SetFont(font);
+    //~ snippetName = new wxTextCtrl(this, wxID_ANY, "this is a text",
+    //~ wxDefaultPosition, wxSize(-1, 35));
+    //~ snippetName->SetFont(font);
     
     editor = new wxStyledTextCtrl(this, wxID_ANY);
     editor->StyleSetFont(wxSTC_STYLE_DEFAULT, font);
@@ -73,10 +73,30 @@ RightPanel::RightPanel(wxWindow *w, Database *db)
     
     // line number stuff
     editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
-    editor->SetMarginWidth(0, 40);
+    editor->SetMarginWidth(0, 30);
     editor->StyleSetForeground(wxSTC_STYLE_LINENUMBER, wxColour(150, 150, 150));
     editor->StyleSetBackground(wxSTC_STYLE_LINENUMBER, wxColour(50, 50, 50));
     editor->SetEdgeMode(wxSTC_EDGE_NONE);
+    
+    
+    
+    editor->Bind(wxEVT_STC_ZOOM, [=](wxStyledTextEvent&) {
+        int lineCount = editor->GetLineCount();
+        int digits = 1;
+        while (lineCount >= 10) {
+            lineCount /= 10;
+            digits++;
+        }
+        wxString sample(digits, '9');
+        int width = editor->TextWidth(wxSTC_STYLE_LINENUMBER, sample);
+        editor->SetMarginWidth(0, width + 10);
+    });
+    
+    
+    
+    
+    
+    
     
     
     editor->SetUseHorizontalScrollBar(false);
@@ -102,8 +122,8 @@ RightPanel::RightPanel(wxWindow *w, Database *db)
     
     
     topSizer = new wxBoxSizer(wxVERTICAL);
-    topSizer->Add(snippetName, 0, wxEXPAND | wxALL, 0);
-    topSizer->Add(editor, 1, wxEXPAND | wxALL, 0);
+    //~ topSizer->Add(snippetName, 0, wxEXPAND | wxALL, 8);
+    topSizer->Add(editor, 1, wxEXPAND | wxALL, 8);
     this->SetSizer(topSizer);
     
 }

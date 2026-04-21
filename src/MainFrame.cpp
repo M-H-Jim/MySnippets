@@ -3,6 +3,9 @@
 MainFrame::MainFrame(const wxString& title)
 : wxFrame(NULL, wxID_ANY, title) {
     
+    //~ wxColour bgMain(30, 30, 30);
+    //~ wxColour bgPanel(40, 40, 40);
+    
     panel = new wxPanel(this);
     
     mainSplitter = new wxSplitterWindow(panel, wxID_ANY, wxDefaultPosition,
@@ -26,30 +29,44 @@ MainFrame::MainFrame(const wxString& title)
     
     int width = 800;
     
-    listEditorSplitter->SplitVertically(middlePanel, rightPanel, 0);
-    mainSplitter->SplitVertically(leftPanel, listEditorSplitter, 0);
+    listEditorSplitter->SplitVertically(middlePanel, rightPanel);
+    mainSplitter->SplitVertically(leftPanel, listEditorSplitter);
+    
+    CallAfter([=]()
+    {
+        mainSplitter->SetSashPosition(180);
+        listEditorSplitter->SetSashPosition(220);
+    });
+    
     mainSplitter->SetSashGravity(0.25);
     listEditorSplitter->SetSashGravity(0.5);
     
     
-    mainSplitter->SetMinimumPaneSize(150);
+    
+    
+    
+    
+    
+    mainSplitter->SetMinimumPaneSize(169);
     listEditorSplitter->SetMinimumPaneSize(150);
     
-    leftPanel->SetBackgroundColour(*wxBLACK);
-    middlePanel->SetBackgroundColour(*wxBLACK);
     
-    
+    leftPanel->SetBackgroundColour(wxColour(35,35,35));
+    middlePanel->SetBackgroundColour(wxColour(40,40,40));
+    rightPanel->SetBackgroundColour(wxColour(45, 45, 45));
+        
     mainSizer = new wxBoxSizer(wxVERTICAL);
-    mainSizer->Add(mainSplitter, 1, wxEXPAND);
+    mainSizer->Add(mainSplitter, 1, wxEXPAND | wxALL, 6);
     panel->SetSizer(mainSizer);
     
     
     
     frameSizer = new wxBoxSizer(wxVERTICAL);
-    frameSizer->Add(panel, 1, wxEXPAND);
+    frameSizer->Add(panel, 1, wxEXPAND | wxALL, 6);
     SetSizer(frameSizer);
     
-    
+    CreateStatusBar();
+    SetStatusText("Welcome to MySnippets!");
     
 }
 

@@ -11,7 +11,7 @@ class RightPanel : public wxPanel {
     private:
         wxBoxSizer *topSizer;
         
-        wxTextCtrl *snippetName;
+        //~ wxTextCtrl *snippetName;
         wxStyledTextCtrl *editor;
         
         Database *database;
