@@ -88,6 +88,22 @@ LeftPanel::LeftPanel(wxWindow *w, Database *db)
     addBtn->Bind(wxEVT_BUTTON, &LeftPanel::OnAddBtnClicked, this);
     
     
+    folderList->Bind(wxEVT_RIGHT_DOWN, [this](wxMouseEvent& event) {
+        int item = folderList->HitTest(event.GetPosition());
+        if (item != wxNOT_FOUND) {
+            folderList->SetSelection(item);
+        }
+        event.Skip();
+    });
+    
+    
+    Bind(wxEVT_MENU, &LeftPanel::OnAddBtnClicked, this, ID_ADD_FOLDER);
+    Bind(wxEVT_MENU, &LeftPanel::OnFolderDClick, this, ID_RENAME_FOLDER);
+    Bind(wxEVT_MENU, &LeftPanel::OnDeleteFolder, this, ID_DELETE_FOLDER);
+    
+    
+    
+    
     // Bindings ~~~~~~~~~~~~~~~~~~~~~~~~
      
 }
@@ -99,6 +115,11 @@ int LeftPanel::GetSelectedFolderIndex() const {
 void LeftPanel::OnFolderSelection(wxCommandEvent& event) {
     selectedFolderIndex = event.GetSelection();
     
+    if (selectedFolderIndex == wxNOT_FOUND ||
+        selectedFolderIndex >= (int)folders.size()) {
+            return;
+      }
+    
     wxCommandEvent evt(EVT_FOLDER_SELECTED);
     evt.SetInt(folders[selectedFolderIndex].id);
     
@@ -108,8 +129,9 @@ void LeftPanel::OnFolderSelection(wxCommandEvent& event) {
 
 void LeftPanel::OnFolderDClick(wxCommandEvent& event) {
     int index = folderList->GetSelection();
-    if (index == wxNOT_FOUND) {
-        return;
+    if (index == wxNOT_FOUND ||
+        index >= (int)folders.size()) {
+            return;
     }
     wxString currentName = folderList->GetString(index);
     
@@ -120,8 +142,6 @@ void LeftPanel::OnFolderDClick(wxCommandEvent& event) {
         if (newName.IsEmpty()) {
             return;
         }
-        
-        folderList->SetString(index, newName);
         
         int id = folders[index].id;
         
@@ -134,6 +154,7 @@ void LeftPanel::OnFolderDClick(wxCommandEvent& event) {
             if(sqlite3_step(stmt) == SQLITE_DONE) {
                 sqlite3_finalize(stmt);
                 folders[index].name = newName.ToStdString();
+                folderList->SetString(index, newName);
             }
             else {
                 sqlite3_finalize(stmt);
@@ -159,6 +180,8 @@ void LeftPanel::OnAddBtnClicked(wxCommandEvent& event) {
             sqlite3_bind_text(stmt, 1, folderName.mb_str(), -1, SQLITE_TRANSIENT);
             if(sqlite3_step(stmt) == SQLITE_DONE) {
                 sqlite3_finalize(stmt);
+                int newId = sqlite3_last_insert_rowid(database->Get());
+                folders.push_back({newId, folderName.ToStdString()});
             }
             else {
                 sqlite3_finalize(stmt);
@@ -170,7 +193,8 @@ void LeftPanel::OnAddBtnClicked(wxCommandEvent& event) {
 
 void LeftPanel::OnDeleteFolder(wxCommandEvent& event) {
     int index = folderList->GetSelection();
-    if (index == wxNOT_FOUND) {
+    if (index == wxNOT_FOUND ||
+        index >= (int)folders.size()) {
         return;
     }
     
@@ -209,9 +233,6 @@ void LeftPanel::OnFolderRightClick(wxContextMenuEvent& event) {
     menu.Append(ID_RENAME_FOLDER, "Rename");
     menu.Append(ID_DELETE_FOLDER, "Delete");
     
-    Bind(wxEVT_MENU, &LeftPanel::OnAddBtnClicked, this, ID_ADD_FOLDER);
-    Bind(wxEVT_MENU, &LeftPanel::OnFolderDClick, this, ID_RENAME_FOLDER);
-    Bind(wxEVT_MENU, &LeftPanel::OnDeleteFolder, this, ID_DELETE_FOLDER);
     
     PopupMenu(&menu);
 }

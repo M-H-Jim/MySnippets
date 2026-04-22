@@ -36,12 +36,6 @@ MiddlePanel::MiddlePanel(wxWindow *w, Database *db)
     snippetList->SetBackgroundColour(wxColour(35, 35, 35));
     snippetList->SetForegroundColour(wxColour(220, 220, 220));
     
-    
-    snippetList->Append("Personal");
-    snippetList->Append("Work");
-    snippetList->Append("Ideas");
-    snippetList->Append("Archive");
-    
     //----------------------
     
     
@@ -52,10 +46,50 @@ MiddlePanel::MiddlePanel(wxWindow *w, Database *db)
     this->SetSizer(topSizer);
     
     
+    
+    // Binding----------------------------------------
+    
+    addBtn->Bind(wxEVT_BUTTON, &MiddlePanel::OnAddSnippet, this);
+    
+    
+    
+    // Binding~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    
+    
 }
 
 
+void MiddlePanel::OnAddSnippet(wxCommandEvent& event) {
+    if (currentFolderId == -1) {
+        return;
+    }
+    
+    wxTextEntryDialog dialog(this, "Enter snippet name:", "New Snippet");
+    
+    if (dialog.ShowModal() == wxID_OK) {
+        wxString title = dialog.GetValue();
+        
+        const char *sql = "INSERT INTO snippets (folder_id, title, content) VALUES (?, ?, '')";
+        sqlite3_stmt *stmt;
+        
+        if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
+            sqlite3_bind_int(stmt, 1, currentFolderId);
+            sqlite3_bind_text(stmt, 2, title.c_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_step(stmt);
+        }
+        sqlite3_finalize(stmt);
+        LoadSnippetsTitleForFolder(currentFolderId);
+    }
+}
+
+
+
+
 void MiddlePanel::LoadSnippetsTitleForFolder(int folderId) {
+    
+    currentFolderId = folderId;
+    
     snippetList->Clear();
     snippets.clear();
     
@@ -77,12 +111,17 @@ void MiddlePanel::LoadSnippetsTitleForFolder(int folderId) {
 void MiddlePanel::OnSnippetSelection(wxCommandEvent& event) {
     selectedSnippetIndex = event.GetSelection();
     
+    if (selectedSnippetIndex < 0 || selectedSnippetIndex >= snippets.size()) {
+        return;
+    }
+    
     wxCommandEvent evt(EVT_SNIPPET_SELECTED);
     evt.SetInt(snippets[selectedSnippetIndex].id);
     
     wxPostEvent(this, evt);
     
 }
+
 
 
 

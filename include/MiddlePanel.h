@@ -37,11 +37,14 @@ class MiddlePanel : public wxPanel {
         wxListBox *snippetList;
         int selectedSnippetIndex = -1;
         
+        int currentFolderId = -1;
+        
     public:
         MiddlePanel(wxWindow *w, Database *db);
         void LoadSnippetsTitleForFolder(int folderId);
     private:
         void OnSnippetSelection(wxCommandEvent& event);
+        void OnAddSnippet(wxCommandEvent& event);
 };
 
 #endif // MIDDLEPANEL_H
