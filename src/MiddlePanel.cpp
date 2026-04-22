@@ -31,7 +31,6 @@ MiddlePanel::MiddlePanel(wxWindow *w, Database *db)
     snippetList = new wxListBox(this, wxID_ANY);
     snippetList->SetFont(font);
     
-    snippetList->Bind(wxEVT_LISTBOX, &MiddlePanel::OnSnippetSelection, this);
     
     snippetList->SetBackgroundColour(wxColour(35, 35, 35));
     snippetList->SetForegroundColour(wxColour(220, 220, 220));
@@ -49,7 +48,29 @@ MiddlePanel::MiddlePanel(wxWindow *w, Database *db)
     
     // Binding----------------------------------------
     
-    addBtn->Bind(wxEVT_BUTTON, &MiddlePanel::OnAddSnippet, this);
+    
+    snippetList->Bind(wxEVT_LISTBOX, &MiddlePanel::OnSnippetSelection, this);
+    snippetList->Bind(wxEVT_LISTBOX_DCLICK, &MiddlePanel::OnSnippetDClick, this);
+    
+    snippetList->Bind(wxEVT_CONTEXT_MENU, &MiddlePanel::OnSnippetRightClick, this);
+    
+    
+    addBtn->Bind(wxEVT_BUTTON, &MiddlePanel::OnAddBtnClicked, this);
+    
+    
+    snippetList->Bind(wxEVT_RIGHT_DOWN, [this](wxMouseEvent& event) {
+        int item = snippetList->HitTest(event.GetPosition());
+        if (item != wxNOT_FOUND) {
+            snippetList->SetSelection(item);
+        }
+        event.Skip();
+    });
+    
+    
+    Bind(wxEVT_MENU, &MiddlePanel::OnAddBtnClicked, this,MiddlePanelIDs::ID_ADD_SNIPPET);
+    Bind(wxEVT_MENU, &MiddlePanel::OnSnippetDClick, this, MiddlePanelIDs::ID_RENAME_SNIPPET);
+    Bind(wxEVT_MENU, &MiddlePanel::OnDeleteSnippet, this, MiddlePanelIDs::ID_DELETE_SNIPPET);
+    
     
     
     
@@ -60,7 +81,7 @@ MiddlePanel::MiddlePanel(wxWindow *w, Database *db)
 }
 
 
-void MiddlePanel::OnAddSnippet(wxCommandEvent& event) {
+void MiddlePanel::OnAddBtnClicked(wxCommandEvent& event) {
     if (currentFolderId == -1) {
         return;
     }
@@ -81,6 +102,105 @@ void MiddlePanel::OnAddSnippet(wxCommandEvent& event) {
         sqlite3_finalize(stmt);
         LoadSnippetsTitleForFolder(currentFolderId);
     }
+}
+
+
+void MiddlePanel::OnSnippetDClick(wxCommandEvent& event) {
+    int index = snippetList->GetSelection();
+    if (index == wxNOT_FOUND ||
+        index >= (int)snippets.size()) {
+            return;
+    }
+    wxString currentName = snippetList->GetString(index);
+    
+    wxTextEntryDialog dialog(this, "Rename snippet:", "Rename", currentName);
+    
+    if (dialog.ShowModal() == wxID_OK) {
+        wxString newName = dialog.GetValue();
+        if (newName.IsEmpty()) {
+            return;
+        }
+        
+        int id = snippets[index].id;
+        
+        sqlite3_stmt *stmt;
+        const char *sql = "UPDATE snippets SET title = ? WHERE id = ?;";
+        
+        if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
+            sqlite3_bind_text(stmt, 1, newName.mb_str(), -1, SQLITE_TRANSIENT);
+            sqlite3_bind_int(stmt, 2, id);
+            if(sqlite3_step(stmt) == SQLITE_DONE) {
+                sqlite3_finalize(stmt);
+                snippets[index].title = newName.ToStdString();
+                snippetList->SetString(index, newName);
+            }
+            else {
+                sqlite3_finalize(stmt);
+                wxMessageBox("Failed to update database!");
+            }
+        }
+        
+    }
+}
+
+
+void MiddlePanel::OnDeleteSnippet(wxCommandEvent& event) {
+    int index = snippetList->GetSelection();
+    if (index == wxNOT_FOUND ||
+        index >= (int)snippets.size()) {
+        return;
+    }
+    
+    
+    int res = wxMessageBox(
+        "Are you sure you want to delete snippet?",
+        "confirm Delete",
+        wxYES_NO | wxICON_WARNING
+    );
+    
+    if (res != wxYES) {
+        return;
+    }
+    
+    int id = snippets[index].id;
+    sqlite3_stmt *stmt;
+    const char *sql = "DELETE FROM snippets WHERE id = ?;";
+    
+    if (sqlite3_prepare_v2(database->Get(), sql, -1, &stmt, NULL) == SQLITE_OK) {
+        sqlite3_bind_int(stmt, 1, id);
+        if(sqlite3_step(stmt) == SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            snippetList->Delete(index);
+            snippets.erase(snippets.begin() + index);
+        }
+        else {
+            sqlite3_finalize(stmt);
+            wxMessageBox("Failed to snippets");
+        }
+    }
+}
+
+
+
+
+
+
+
+
+void MiddlePanel::OnSnippetRightClick(wxContextMenuEvent& event) {
+    int index = snippetList->GetSelection();
+    if (index < 0 || index >= (int)snippets.size()) {
+        return;
+    }
+    
+    wxMenu menu;
+    menu.Append(MiddlePanelIDs::ID_ADD_SNIPPET, "New Snippet");
+    menu.Append(MiddlePanelIDs::ID_RENAME_SNIPPET, "Rename");
+    menu.Append(MiddlePanelIDs::ID_DELETE_SNIPPET, "Delete");
+    
+    
+    PopupMenu(&menu);
+    
 }
 
 

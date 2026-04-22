@@ -97,9 +97,9 @@ LeftPanel::LeftPanel(wxWindow *w, Database *db)
     });
     
     
-    Bind(wxEVT_MENU, &LeftPanel::OnAddBtnClicked, this, ID_ADD_FOLDER);
-    Bind(wxEVT_MENU, &LeftPanel::OnFolderDClick, this, ID_RENAME_FOLDER);
-    Bind(wxEVT_MENU, &LeftPanel::OnDeleteFolder, this, ID_DELETE_FOLDER);
+    Bind(wxEVT_MENU, &LeftPanel::OnAddBtnClicked, this, LeftPanelIDs::ID_ADD_FOLDER);
+    Bind(wxEVT_MENU, &LeftPanel::OnFolderDClick, this, LeftPanelIDs::ID_RENAME_FOLDER);
+    Bind(wxEVT_MENU, &LeftPanel::OnDeleteFolder, this, LeftPanelIDs::ID_DELETE_FOLDER);
     
     
     
@@ -228,10 +228,17 @@ void LeftPanel::OnDeleteFolder(wxCommandEvent& event) {
 }
 
 void LeftPanel::OnFolderRightClick(wxContextMenuEvent& event) {
+    
+    int index = folderList->GetSelection();
+    if (index < 0 || index >= (int)folders.size()) {
+        return;
+    }
+    
+    
     wxMenu menu;
-    menu.Append(ID_ADD_FOLDER, "New Folder");
-    menu.Append(ID_RENAME_FOLDER, "Rename");
-    menu.Append(ID_DELETE_FOLDER, "Delete");
+    menu.Append(LeftPanelIDs::ID_ADD_FOLDER, "New Folder");
+    menu.Append(LeftPanelIDs::ID_RENAME_FOLDER, "Rename");
+    menu.Append(LeftPanelIDs::ID_DELETE_FOLDER, "Delete");
     
     
     PopupMenu(&menu);

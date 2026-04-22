@@ -12,11 +12,16 @@
 
 wxDECLARE_EVENT(EVT_FOLDER_SELECTED, wxCommandEvent);
 
-enum {
-    ID_ADD_FOLDER = wxID_HIGHEST + 1,
-    ID_RENAME_FOLDER,
-    ID_DELETE_FOLDER
-};
+
+namespace LeftPanelIDs {
+    enum {
+        ID_ADD_FOLDER = wxID_HIGHEST + 1,
+        ID_RENAME_FOLDER,
+        ID_DELETE_FOLDER
+    };
+}
+
+
 
 
 

@@ -14,6 +14,20 @@
 wxDECLARE_EVENT(EVT_SNIPPET_SELECTED, wxCommandEvent);
 
 
+
+namespace MiddlePanelIDs {
+    enum {
+        ID_ADD_SNIPPET = wxID_HIGHEST + 10,
+        ID_RENAME_SNIPPET,
+        ID_DELETE_SNIPPET
+    };
+}
+
+
+
+
+
+
 struct Snippet {
     int id;
     std::string title;
@@ -44,7 +58,11 @@ class MiddlePanel : public wxPanel {
         void LoadSnippetsTitleForFolder(int folderId);
     private:
         void OnSnippetSelection(wxCommandEvent& event);
-        void OnAddSnippet(wxCommandEvent& event);
+        void OnAddBtnClicked(wxCommandEvent& event);
+        
+        void OnSnippetRightClick(wxContextMenuEvent& event);
+        void OnSnippetDClick(wxCommandEvent& event);
+        void OnDeleteSnippet(wxCommandEvent& event);
 };
 
 #endif // MIDDLEPANEL_H
