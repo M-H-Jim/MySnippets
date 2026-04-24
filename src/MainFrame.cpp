@@ -86,6 +86,7 @@ MainFrame::MainFrame(const wxString& title)
 void MainFrame::OnSnippetSelected(wxCommandEvent& event) {
     int snippetId = event.GetInt();
     rightPanel->LoadSnippetForTitle(snippetId);
+    rightPanel->SetCurrentSnippetId(snippetId);
 }
 
 void MainFrame::OnFolderSelected(wxCommandEvent& event) {
@@ -94,15 +95,17 @@ void MainFrame::OnFolderSelected(wxCommandEvent& event) {
 }
 
 void MainFrame::OnSnippetDeleted(wxCommandEvent& event) {
-    int deletedId = event.GetInt();
+    std::cout << "inside func" << std::endl;
+    int deletedId = event.GetInt(); // it doesn't exist anymore
     
-    int currentId = middlePanel->GetSelectedSnippetId();
-    
+    int currentId = rightPanel->GetCurrentSnippetId();
+    std::cout << deletedId << std::endl << currentId << std::endl;
     if (deletedId == currentId) {
         auto editor = rightPanel->GetEditor();
         editor->SetText("");
         editor->EmptyUndoBuffer();
         editor->SetSavePoint();
+        std::cout << "editor" << std::endl;
         
     }
 }

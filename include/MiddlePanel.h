@@ -56,7 +56,6 @@ class MiddlePanel : public wxPanel {
     public:
         MiddlePanel(wxWindow *w, Database *db);
         void LoadSnippetsTitleForFolder(int folderId);
-        int GetSelectedSnippetId();
     private:
         void OnSnippetSelection(wxCommandEvent& event);
         void OnAddBtnClicked(wxCommandEvent& event);

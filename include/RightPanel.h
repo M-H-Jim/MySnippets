@@ -16,10 +16,14 @@ class RightPanel : public wxPanel {
         
         Database *database;
         
+        int currentSnippetId = -1;
+        
     public:
         RightPanel(wxWindow *w, Database *db);
         wxStyledTextCtrl* GetEditor();
         void LoadSnippetForTitle(int snippetId);
+        void SetCurrentSnippetId(int Id);
+        int GetCurrentSnippetId();
 };
 
 

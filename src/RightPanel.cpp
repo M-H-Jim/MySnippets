@@ -150,8 +150,13 @@ void RightPanel::LoadSnippetForTitle(int snippetId) {
     sqlite3_finalize(stmt);
 }
 
+void RightPanel::SetCurrentSnippetId(int Id) {
+    currentSnippetId = Id;
+}
 
-
+int RightPanel::GetCurrentSnippetId() {
+    return currentSnippetId;
+}
 
 
 

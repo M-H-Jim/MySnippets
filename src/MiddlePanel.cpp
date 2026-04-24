@@ -162,7 +162,7 @@ void MiddlePanel::OnDeleteSnippet(wxCommandEvent& event) {
         return;
     }
     
-    int id = snippets[index].id;
+    int id = snippets[index].id; // currently under mouse
     sqlite3_stmt *stmt;
     const char *sql = "DELETE FROM snippets WHERE id = ?;";
     
@@ -234,6 +234,7 @@ void MiddlePanel::LoadSnippetsTitleForFolder(int folderId) {
 
 void MiddlePanel::OnSnippetSelection(wxCommandEvent& event) {
     selectedSnippetIndex = event.GetSelection();
+    std::cout << "selectindex: " << selectedSnippetIndex << std::endl;
     
     if (selectedSnippetIndex < 0 || selectedSnippetIndex >= snippets.size()) {
         return;
@@ -241,16 +242,10 @@ void MiddlePanel::OnSnippetSelection(wxCommandEvent& event) {
     
     wxCommandEvent evt(EVT_SNIPPET_SELECTED);
     evt.SetInt(snippets[selectedSnippetIndex].id);
-    
+    std::cout << "assign: " << evt.GetInt() << std::endl;
     wxPostEvent(this, evt);
     
 }
-
-int MiddlePanel::GetSelectedSnippetId() {
-    return snippets[selectedSnippetIndex].id;
-}
-
-
 
 
 
