@@ -18,10 +18,11 @@ MainFrame::MainFrame(const wxString& title)
     db = new Database("snippets.db");
     
     leftPanel = new LeftPanel(mainSplitter, db);
-    this->Bind(EVT_FOLDER_SELECTED, &MainFrame::OnFolderSelected, this);
+    
     
     middlePanel = new MiddlePanel(listEditorSplitter, db);
-    this->Bind(EVT_SNIPPET_SELECTED, &MainFrame::OnSnippetSelected, this);
+    
+    
     
     rightPanel = new RightPanel(listEditorSplitter, db);
     
@@ -67,6 +68,18 @@ MainFrame::MainFrame(const wxString& title)
     CreateStatusBar();
     SetStatusText("Welcome to MySnippets!");
     
+    
+    
+    
+    
+    // binding------------------------------------
+    this->Bind(EVT_FOLDER_SELECTED, &MainFrame::OnFolderSelected, this);
+    this->Bind(EVT_SNIPPET_SELECTED, &MainFrame::OnSnippetSelected, this);
+    this->Bind(wxEVT_MENU, &MainFrame::OnSnippetDeleted, this);
+    
+    // binding~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    
 }
 
 
@@ -79,5 +92,24 @@ void MainFrame::OnFolderSelected(wxCommandEvent& event) {
     int folderId = event.GetInt();
     middlePanel->LoadSnippetsTitleForFolder(folderId);
 }
+
+void MainFrame::OnSnippetDeleted(wxCommandEvent& event) {
+    int deletedId = event.GetInt();
+    
+    int currentId = middlePanel->GetSelectedSnippetId();
+    
+    if (deletedId == currentId) {
+        auto editor = rightPanel->GetEditor();
+        editor->SetText("");
+        editor->EmptyUndoBuffer();
+        editor->SetSavePoint();
+        
+    }
+}
+
+
+
+
+
 
 

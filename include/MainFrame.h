@@ -33,6 +33,7 @@ class MainFrame : public wxFrame {
     private:
         void OnFolderSelected(wxCommandEvent& event);
         void OnSnippetSelected(wxCommandEvent& event);
+        void OnSnippetDeleted(wxCommandEvent& event);
 };
 
 

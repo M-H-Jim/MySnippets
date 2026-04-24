@@ -142,6 +142,8 @@ void RightPanel::LoadSnippetForTitle(int snippetId) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             const char *content = (const char *)sqlite3_column_text(stmt, 0);
             editor->SetText(content);
+            editor->EmptyUndoBuffer();
+            editor->SetSavePoint();
         }
     }
     

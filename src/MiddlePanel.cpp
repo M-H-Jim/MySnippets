@@ -172,10 +172,14 @@ void MiddlePanel::OnDeleteSnippet(wxCommandEvent& event) {
             sqlite3_finalize(stmt);
             snippetList->Delete(index);
             snippets.erase(snippets.begin() + index);
+            
+            wxCommandEvent evt(wxEVT_MENU);
+            evt.SetInt(id);
+            wxPostEvent(this, evt);
         }
         else {
             sqlite3_finalize(stmt);
-            wxMessageBox("Failed to snippets");
+            wxMessageBox("Failed to delete snippet");
         }
     }
 }
@@ -242,7 +246,9 @@ void MiddlePanel::OnSnippetSelection(wxCommandEvent& event) {
     
 }
 
-
+int MiddlePanel::GetSelectedSnippetId() {
+    return snippets[selectedSnippetIndex].id;
+}
 
 
 
